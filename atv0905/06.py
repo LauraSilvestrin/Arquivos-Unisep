@@ -8,4 +8,5 @@ while True:
         soma += i
         cont += 1
     if cont == 10:
+        print(f"a media dos valores é: {soma/cont}")
         break
