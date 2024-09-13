@@ -1,4 +1,9 @@
-package Biblioteca.model;
+package Biblioteca.view;
+
+import Biblioteca.model.Autor;
+import Biblioteca.model.Emprestimo;
+import Biblioteca.model.Livro;
+import Biblioteca.model.Usuario;
 
 import javax.swing.*;
 import java.time.LocalDate;
@@ -21,13 +26,13 @@ public class BibliotecaApp {
         System.out.println("Quantos autores possui o livro? ");
         int autores = input.nextInt();
         for (int i = 0; i < autores; i++) {
-            System.out.print("Didite o nome do autor " + (i + 1) + ": ");
+            System.out.print("Digite o nome do autor " + (i + 1) + ": ");
             input = new Scanner(System.in);
-            //String outroNome = JOptionPane.showInputDialog("Digite o nome");
+
             String nome = input.nextLine();
             String[] nomeCompleto = nome.split(" ");
 
-            System.out.print("Didite a nacionalidade do autor " + (i + 1) + ": ");
+            System.out.print("Digite a nacionalidade do autor " + (i + 1) + ": ");
             String nacionalidade = input.next();
 
             Autor autor = new Autor(nomeCompleto[0], nomeCompleto[1], nacionalidade);
@@ -36,13 +41,24 @@ public class BibliotecaApp {
         }
         System.out.println("Digite o titulo do livro: ");
         String titulo = input.next();
+
         System.out.println("Digite o numero de páginas livro: ");
         int paginas = input.nextInt();
 
         Livro livro = new Livro(titulo, autoresLivro1, paginas);
-        List<Livro> livrosEmprestados = new ArrayList<>();
-        Usuario usuario = new Usuario("João Silva", "joao.silva@example.com", livrosEmprestados);
 
+        System.out.println("Digite o nome do usuario: ");
+        input = new Scanner(System.in);
+        String nomeUsuario = input.next();
+
+        System.out.println("Digite o email do usuário: ");
+        String email = input.next();
+
+        List<Livro> livrosEmprestados = new ArrayList<>();
+        Usuario usuario = new Usuario(nomeUsuario, email, livrosEmprestados);
+        livrosEmprestados.add(livro);
+
+        usuario.setLivrosEmprestados(livrosEmprestados);
         LocalDate dataEmprestimo = LocalDate.now();
         LocalDate dataPrevistaDevolucao = dataEmprestimo.plusWeeks(2);
 
