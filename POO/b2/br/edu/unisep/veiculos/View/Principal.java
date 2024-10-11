@@ -1,10 +1,13 @@
 package br.edu.unisep.veiculos.View;
 
 import br.edu.unisep.unbank.model.ContaPoupanca;
+import br.edu.unisep.unbank.model.Frota;
 import br.edu.unisep.veiculos.Model.*;
 
 public class Principal {
     public static void main(String[] args) {
+
+        Frota frota = new Frota();
 
         Veiculo caminhao = new Caminhao("ABC1D23", "Branco", "Scania", 600, 12);
         caminhao.exibirDetalhes();
@@ -22,5 +25,12 @@ public class Principal {
         moto.exibirDetalhes();
         ((Moto)moto).abrirBau();
         ((Moto)moto).fecharBau();
+
+        frota.adicionarVeiculo(caminhao);
+        frota.adicionarVeiculo(carro);
+        frota.adicionarVeiculo(moto);
+
+        System.out.println("____ Exibir frota ____");
+        frota.exibirDetalhes();
     }
 }
