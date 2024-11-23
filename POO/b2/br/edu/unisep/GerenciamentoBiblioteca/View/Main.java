@@ -1,79 +1,84 @@
+
 import javax.swing.*;
+import java.util.ArrayList;
 import java.util.List;
-import import br.edu.unisep.Gerenciamento_Biblioteca*;
+
 public class Main {
+    private static List<Livro> livros = new ArrayList<>();
+    private static List<Autor> autores = new ArrayList<>();
+    private static List<Genero> generos = new ArrayList<>();
 
     public static void main(String[] args) {
-        Biblioteca biblioteca = new Biblioteca();
-
         while (true) {
-            String menu = "1. Cadastrar Livro\n2. Consultar Livros Disponíveis\n3. Cadastrar Usuário\n4. Realizar Empréstimo\n5. Devolver Livro\n6. Sair";
-            String opcao = JOptionPane.showInputDialog(menu);
-            switch (opcao) {
-                case "1":
-                    cadastrarLivro(biblioteca);
-                    break;
-                case "2":
-                    consultarLivros(biblioteca);
-                    break;
-                case "3":
-                    cadastrarUsuario(biblioteca);
-                    break;
-                case "4":
-                    realizarEmprestimo(biblioteca);
-                    break;
-                case "5":
-                    devolverLivro(biblioteca);
-                    break;
-                case "6":
-                    System.exit(0);
-                    break;
-                default:
-                    JOptionPane.showMessageDialog(null, "Opção inválida!");
+            String[] opcoes = {"Cadastrar Autor", "Cadastrar Gênero", "Cadastrar Livro", "Ver Livros Cadastrados", "Sair"};
+            int escolha = JOptionPane.showOptionDialog(null, "Selecione uma opção", "Biblioteca",
+                    JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, opcoes, opcoes[0]);
+
+            switch (escolha) {
+                case 0 -> cadastrarAutor();
+                case 1 -> cadastrarGenero();
+                case 2 -> cadastrarLivro();
+                case 3 -> verLivrosCadastrados();
+                case 4 -> System.exit(0);
+                default -> JOptionPane.showMessageDialog(null, "Opção inválida!");
             }
         }
     }
 
-    public static void cadastrarLivro(Biblioteca biblioteca) {
-        String titulo = JOptionPane.showInputDialog("Digite o título do livro:");
-        String autorNome = JOptionPane.showInputDialog("Digite o nome do autor:");
-        String generoNome = JOptionPane.showInputDialog("Digite o gênero do livro:");
-        Autor autor = new Autor(autorNome);
-        Genero genero = new Genero(generoNome);
-        String tipoLivro = JOptionPane.showInputDialog("Tipo de Livro: 1 - Físico, 2 - Digital");
+    private static void cadastrarAutor() {
+        String nome = JOptionPane.showInputDialog("Informe o nome do autor:");
+        if (nome != null && !nome.isEmpty()) {
+            autores.add(new Autor(nome));
+            JOptionPane.showMessageDialog(null, "Autor cadastrado com sucesso!");
+        }
+    }
 
-        Livro livro = null;
-        if (tipoLivro.equals("1")) {
-            int paginas = Integer.parseInt(JOptionPane.showInputDialog("Digite o número de páginas:"));
-            livro = new LivroFisico(titulo, autor, genero, paginas);
-        } else if (tipoLivro.equals("2")) {
-            String formato = JOptionPane.showInputDialog("Digite o formato do livro digital:");
-            livro = new LivroDigital(titulo, autor, genero, formato);
+    private static void cadastrarGenero() {
+        String nome = JOptionPane.showInputDialog("Informe o nome do gênero:");
+        if (nome != null && !nome.isEmpty()) {
+            generos.add(new Genero(nome));
+            JOptionPane.showMessageDialog(null, "Gênero cadastrado com sucesso!");
+        }
+    }
+
+    private static void cadastrarLivro() {
+        if (autores.isEmpty() || generos.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Cadastre autores e gêneros antes de cadastrar livros.");
+            return;
         }
 
-        biblioteca.adicionarLivro(livro);
+        String titulo = JOptionPane.showInputDialog("Informe o título do livro:");
+        Autor autor = (Autor) JOptionPane.showInputDialog(null, "Selecione o autor:", "Autor",
+                JOptionPane.QUESTION_MESSAGE, null, autores.toArray(), null);
+        Genero genero = (Genero) JOptionPane.showInputDialog(null, "Selecione o gênero:", "Gênero",
+                JOptionPane.QUESTION_MESSAGE, null, generos.toArray(), null);
+
+        String[] tipos = {"Livro Físico", "Livro Digital"};
+        int tipo = JOptionPane.showOptionDialog(null, "Tipo de livro:", "Tipo",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, tipos, tipos[0]);
+
+        if (tipo == 0) {
+            int paginas = Integer.parseInt(JOptionPane.showInputDialog("Número de páginas:"));
+            livros.add(new LivroFisico(titulo, autor, genero, paginas));
+        } else if (tipo == 1) {
+            double tamanho = Double.parseDouble(JOptionPane.showInputDialog("Tamanho do arquivo (MB):"));
+            livros.add(new LivroDigital(titulo, autor, genero, tamanho));
+        }
+
         JOptionPane.showMessageDialog(null, "Livro cadastrado com sucesso!");
     }
 
-    public static void consultarLivros(Biblioteca biblioteca) {
-        List<Livro> livrosDisponiveis = biblioteca.consultarLivrosDisponiveis();
-        if (livrosDisponiveis.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Nenhum livro disponível.");
-        } else {
-            StringBuilder sb = new StringBuilder("Livros disponíveis:\n");
-            for (Livro livro : livrosDisponiveis) {
-                sb.append(livro.getTitulo()).append("\n");
-            }
-            JOptionPane.showMessageDialog(null, sb.toString());
+    private static void verLivrosCadastrados() {
+        if (livros.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Nenhum livro cadastrado.");
+            return;
         }
-    }
 
-    public static void cadastrarUsuario(Biblioteca biblioteca) {
-        String nome = JOptionPane.showInputDialog("Digite o nome do usuário:");
-        String email = JOptionPane.showInputDialog("Digite o e-mail do usuário:");
-        Usuario usuario = new Usuario(nome, email);
-        biblioteca.adicionarUsuario(usuario);
-        JOptionPane.showMessageDialog(null, "Usuário cadastrado com sucesso!");
-    }
+        StringBuilder listaLivros = new StringBuilder("Livros cadastrados:\n");
+        for (int i = 0; i < livros.size(); i++) {
+            listaLivros.append(i + 1).append(". ").append(livros.get(i).toString()).append("\n");
+        }
 
-    public static
+        JOptionPane.showMessageDialog(null, listaLivros.toString());
+    }
+}
