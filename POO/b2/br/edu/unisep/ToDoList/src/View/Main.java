@@ -19,7 +19,8 @@ public class Main {
                             "5. Sair"
             );
 
-            if (opcao == null) break;
+            if (opcao == null) break;clube
+                    cl
 
             switch (opcao) {
                 case "1":
